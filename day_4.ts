@@ -11,11 +11,11 @@ function part1(input: string): number {
   const searchStr = "XMAS";
   for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
     for (let columnIndex = 0; columnIndex < rows[rowIndex].length; columnIndex++) {
-      //checking left to right
-      {
+      //checking horizontal
+      for (const step of [-1, 1]) {
         let isMatch = true;
         for (let searchIndex = 0; searchIndex < searchStr.length; searchIndex++) {
-          if (searchStr[searchIndex] !== rows[rowIndex][columnIndex + searchIndex]) {
+          if (searchStr[searchIndex] !== rows[rowIndex][columnIndex + searchIndex * step]) {
             isMatch = false;
             break;
           }
@@ -24,42 +24,13 @@ function part1(input: string): number {
           xmasCount++;
         }
       }
-      //checking right to left
-      {
-        let isMatch = true;
-        for (let searchIndex = 0; searchIndex < searchStr.length; searchIndex++) {
-          if (searchStr[searchIndex] !== rows[rowIndex][columnIndex - searchIndex]) {
-            isMatch = false;
-            break;
-          }
-        }
-        if (isMatch) {
-          xmasCount++;
-        }
-      }
-      //checking down
-      {
+      //checking vertical
+      for (const step of [-1, 1]) {
         let isMatch = true;
         for (let searchIndex = 0; searchIndex < searchStr.length; searchIndex++) {
           if (
-            rows[rowIndex + searchIndex] === undefined ||
-            searchStr[searchIndex] !== rows[rowIndex + searchIndex][columnIndex]
-          ) {
-            isMatch = false;
-            break;
-          }
-        }
-        if (isMatch) {
-          xmasCount++;
-        }
-      }
-      //checking down
-      {
-        let isMatch = true;
-        for (let searchIndex = 0; searchIndex < searchStr.length; searchIndex++) {
-          if (
-            rows[rowIndex + searchIndex] === undefined ||
-            searchStr[searchIndex] !== rows[rowIndex + searchIndex][columnIndex]
+            rows[rowIndex + searchIndex * step] === undefined ||
+            searchStr[searchIndex] !== rows[rowIndex + searchIndex * step][columnIndex]
           ) {
             isMatch = false;
             break;
