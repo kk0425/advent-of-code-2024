@@ -11,7 +11,6 @@ function part1(input: string): number {
   const searchStr = "XMAS";
   for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
     for (let columnIndex = 0; columnIndex < rows[rowIndex].length; columnIndex++) {
-      //check horizontal and vertical
       const stepCombos = [
         [0, 1],
         [0, -1],
