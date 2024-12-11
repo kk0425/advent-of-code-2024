@@ -11,26 +11,23 @@ function part1(input: string): number {
   const searchStr = "XMAS";
   for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
     for (let columnIndex = 0; columnIndex < rows[rowIndex].length; columnIndex++) {
-      //checking horizontal
-      for (const step of [-1, 1]) {
-        let isMatch = true;
-        for (let searchIndex = 0; searchIndex < searchStr.length; searchIndex++) {
-          if (searchStr[searchIndex] !== rows[rowIndex][columnIndex + searchIndex * step]) {
-            isMatch = false;
-            break;
-          }
-        }
-        if (isMatch) {
-          xmasCount++;
-        }
-      }
-      //checking vertical
-      for (const step of [-1, 1]) {
+      //check horizontal and vertical
+      const stepCombos = [
+        [0, 1],
+        [0, -1],
+        [1, 0],
+        [-1, 0],
+        [1, 1],
+        [1, -1],
+        [-1, 1],
+        [-1, -1],
+      ];
+      for (const [rowStep, columnStep] of stepCombos) {
         let isMatch = true;
         for (let searchIndex = 0; searchIndex < searchStr.length; searchIndex++) {
           if (
-            rows[rowIndex + searchIndex * step] === undefined ||
-            searchStr[searchIndex] !== rows[rowIndex + searchIndex * step][columnIndex]
+            rows[rowIndex + searchIndex * rowStep] === undefined ||
+            searchStr[searchIndex] !== rows[rowIndex + searchIndex * rowStep][columnIndex + searchIndex * columnStep]
           ) {
             isMatch = false;
             break;
