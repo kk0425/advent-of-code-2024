@@ -1,5 +1,6 @@
 import { assertEquals } from "@std/assert";
 import { runPart } from "@macil/aocd";
+import { addVectors, getLocationFromStringGrid, multiplyVector, Vector2 } from "./vector2.ts";
 
 function parse(input: string) {
   return input.trimEnd().split("\n");
@@ -11,7 +12,7 @@ function part1(input: string): number {
   const searchStr = "XMAS";
   for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
     for (let columnIndex = 0; columnIndex < rows[rowIndex].length; columnIndex++) {
-      const stepCombos = [
+      const stepCombos: Vector2[] = [
         [0, 1],
         [0, -1],
         [1, 0],
@@ -21,12 +22,16 @@ function part1(input: string): number {
         [-1, 1],
         [-1, -1],
       ];
-      for (const [rowStep, columnStep] of stepCombos) {
+      for (const step of stepCombos) {
         let isMatch = true;
         for (let searchIndex = 0; searchIndex < searchStr.length; searchIndex++) {
+          const location: Vector2 = [rowIndex, columnIndex];
           if (
-            rows[rowIndex + searchIndex * rowStep] === undefined ||
-            searchStr[searchIndex] !== rows[rowIndex + searchIndex * rowStep][columnIndex + searchIndex * columnStep]
+            searchStr[searchIndex] !==
+              getLocationFromStringGrid(
+                rows,
+                addVectors(location, multiplyVector(step, searchIndex)),
+              )
           ) {
             isMatch = false;
             break;
