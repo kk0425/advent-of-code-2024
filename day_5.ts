@@ -53,14 +53,47 @@ function part1(inputStr: string): number {
   return result;
 }
 
-// function part2(input: string): number {
-//   const items = parse(input);
-//   throw new Error("TODO");
-// }
+function fixUpdate(rules: Array<Rule>, update: Array<number>) {
+  outer: while (true) {
+    for (const rule of rules) {
+      const xIndex = update.indexOf(rule.x);
+      const yIndex = update.indexOf(rule.y);
+
+      if (xIndex === -1 || yIndex === -1) {
+        continue;
+      }
+
+      if (xIndex > yIndex) {
+        const x = update[xIndex];
+        const y = update[yIndex];
+        update[xIndex] = y;
+        update[yIndex] = x;
+
+        continue outer;
+      }
+    }
+    break;
+  }
+}
+
+function part2(inputStr: string): number {
+  const input = parse(inputStr);
+  let result = 0;
+  for (const update of input.pagesUpdate) {
+    if (!checkRules(input.pageOrderingRules, update)) {
+      fixUpdate(input.pageOrderingRules, update);
+
+      const middleIndex = Math.floor(update.length / 2);
+      const middlePage = update[middleIndex];
+      result += middlePage;
+    }
+  }
+  return result;
+}
 
 if (import.meta.main) {
   runPart(2024, 5, 1, part1);
-  // runPart(2024, 5, 2, part2);
+  runPart(2024, 5, 2, part2);
 }
 
 const TEST_INPUT = `\
@@ -98,6 +131,6 @@ Deno.test("part1", () => {
   assertEquals(part1(TEST_INPUT), 143);
 });
 
-// Deno.test("part2", () => {
-//   assertEquals(part2(TEST_INPUT), 12);
-// });
+Deno.test("part2", () => {
+  assertEquals(part2(TEST_INPUT), 123);
+});
