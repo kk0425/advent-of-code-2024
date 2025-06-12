@@ -6,14 +6,14 @@ function parse(input: string): string[] {
 }
 
 function part1(input: string): number {
-  const items = parse(input);
+  const labMap = parse(input);
   let guardRow: number | undefined;
   let guardColumn: number | undefined;
-  let guardSteps = 0;
 
-  outer: for (let row = 0; row < items.length; row++) {
-    for (let column = 0; column < items[row].length; column++) {
-      if (items[row][column] === "^") {
+  //find guard's starting position
+  outer: for (let row = 0; row < labMap.length; row++) {
+    for (let column = 0; column < labMap[row].length; column++) {
+      if (labMap[row][column] === "^") {
         guardRow = row;
         guardColumn = column;
         break outer;
@@ -24,7 +24,15 @@ function part1(input: string): number {
     throw new Error("Guard not found.");
   }
 
-  return guardSteps;
+  //move guard and step count logic
+  const guardMovement = [[-1, 0], [0, 1], [1, 0], [0, -1]]; //up, right, down, left
+  const guardUniqueSteps = new Set<string>();
+
+  console.log(labMap[guardRow + guardMovement[3][0]][guardColumn + guardMovement[3][1]]);
+
+  guardUniqueSteps.add(JSON.stringify([guardRow, guardColumn]));
+
+  return guardUniqueSteps.size;
 }
 
 // function part2(input: string): number {
@@ -51,7 +59,7 @@ const TEST_INPUT = `\
 `;
 
 Deno.test("part1", () => {
-  assertEquals(part1(TEST_INPUT), 11);
+  assertEquals(part1(TEST_INPUT), 41);
 });
 
 // Deno.test("part2", () => {
