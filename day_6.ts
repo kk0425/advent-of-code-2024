@@ -39,11 +39,11 @@ function part1(input: string): number {
   }
 
   let guardCheck: [number, number] = addPair(guardPosition, guardDirection);
-  let valueAtPosition: string = labMap[guardCheck[0]][guardCheck[1]];
+  let valueAtPosition: string | undefined = labMap[guardCheck[0]][guardCheck[1]];
 
   while (valueAtPosition !== undefined) {
     guardCheck = addPair(guardPosition, guardDirection);
-    valueAtPosition = labMap[guardCheck[0]][guardCheck[1]]; //crashing here when getting type after out of bounds
+    valueAtPosition = labMap[guardCheck[0]] !== undefined ? labMap[guardCheck[0]][guardCheck[1]] : undefined;
 
     if (valueAtPosition === "#") {
       if (guardDirection < 3) {
@@ -54,11 +54,9 @@ function part1(input: string): number {
     } else if (valueAtPosition === "." || valueAtPosition === "^") {
       guardUniqueLocations.add(JSON.stringify([guardPosition]));
       guardPosition = guardCheck;
-      console.log("guard step: ", guardUniqueLocations.size); //test
     }
   }
 
-  console.log("Guard final step count: ", guardUniqueLocations.size + 1);
   return guardUniqueLocations.size + 1;
 }
 
