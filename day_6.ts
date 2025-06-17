@@ -7,7 +7,7 @@ function parse(input: string): string[] {
 
 function part1(input: string): number {
   const labMap = parse(input);
-  let guardPosition: [number | undefined, number | undefined] = [0, 0];
+  let guardPosition: [number, number] | undefined;
 
   //find guard's starting position
   outer: for (let row = 0; row < labMap.length; row++) {
@@ -18,7 +18,7 @@ function part1(input: string): number {
       }
     }
   }
-  if (guardPosition[0] === undefined || guardPosition[1] === undefined) {
+  if (guardPosition === undefined) {
     throw new Error("Guard not found.");
   }
 
@@ -27,10 +27,10 @@ function part1(input: string): number {
   let guardDirection = 0;
   const guardUniqueLocations = new Set<string>();
 
-  function addPair(guardPos: [number | undefined, number | undefined], direction: number): [number, number] {
+  function addPair(guardPos: [number, number], direction: number): [number, number] {
     const guard = [0, 0];
-    guard[0] = Number(guardPos[0]);
-    guard[1] = Number(guardPos[1]);
+    guard[0] = guardPos[0];
+    guard[1] = guardPos[1];
 
     guard[0] += guardMovement[direction][0];
     guard[1] += guardMovement[direction][1];
