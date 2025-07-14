@@ -8,11 +8,33 @@ function parse(input: string) {
 function part1(input: string): number {
   const items = parse(input);
 
-  const equation: [number, string][] = items.map((item) => {
+  type Symbol = "+" | "*";
+  type Combo = Symbol[];
+  function generateAllPossibleOperatorLists(equationLength: number): Combo[] {
+    if (equationLength <= 0) return [[]];
+
+    const smaller = generateAllPossibleOperatorLists(equationLength - 1);
+    const result: Combo[] = [];
+
+    for (const c of smaller) {
+      result.push([...c, "+"]);
+      result.push([...c, "*"]);
+    }
+    return result;
+  }
+
+  type Equation = [number, number[]];
+  const equations: Equation[] = items.map((item) => {
     const [answer, inputValues] = item.split(": ");
-    return [Number(answer), inputValues];
-  });
-  console.log(equation);
+    return [Number(answer), inputValues.split(" ").map(Number)] as Equation;
+  })
+    .filter((equationLine) => {
+      generateAllPossibleOperatorLists(equationLine[1].length - 1);
+      return true;
+    });
+
+  //console.log(equations);
+  //console.log(generateAllPossibleOperatorLists(equations[1][1].length - 1));
   throw new Error("TODO");
 }
 
