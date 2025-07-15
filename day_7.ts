@@ -1,41 +1,45 @@
 import { assertEquals } from "@std/assert";
 import { runPart } from "@macil/aocd";
 
+type Equation = [number, number[]];
 function parse(input: string) {
-  return input.trimEnd().split("\n");
+  return input.trimEnd().split("\n").map((item) => {
+    const [answer, inputValues] = item.split(": ");
+    return [Number(answer), inputValues.split(" ").map(Number)] as Equation;
+  });
+}
+
+type Symbol = "+" | "*";
+type Combo = Symbol[];
+function generateAllPossibleOperatorLists(equationLength: number): Combo[] {
+  if (equationLength <= 0) return [[]];
+
+  const smaller = generateAllPossibleOperatorLists(equationLength - 1);
+  const result: Combo[] = [];
+
+  for (const c of smaller) {
+    result.push([...c, "+"]);
+    result.push([...c, "*"]);
+  }
+  return result;
+}
+
+function calculateCombo(numList: number[], opList: Symbol[]): number {
+  return opList.reduce(
+    (acc, op, i) => (op === "+" ? acc + numList[i + 1] : acc * numList[i + 1]),
+    numList[0],
+  );
 }
 
 function part1(input: string): number {
   const items = parse(input);
 
-  type Symbol = "+" | "*";
-  type Combo = Symbol[];
-  function generateAllPossibleOperatorLists(equationLength: number): Combo[] {
-    if (equationLength <= 0) return [[]];
-
-    const smaller = generateAllPossibleOperatorLists(equationLength - 1);
-    const result: Combo[] = [];
-
-    for (const c of smaller) {
-      result.push([...c, "+"]);
-      result.push([...c, "*"]);
-    }
-    return result;
-  }
-
-  type Equation = [number, number[]];
-  const equations: Equation[] = items.map((item) => {
-    const [answer, inputValues] = item.split(": ");
-    return [Number(answer), inputValues.split(" ").map(Number)] as Equation;
+  return items.filter(([answer, numbers]) => {
+    return generateAllPossibleOperatorLists(numbers.length - 1).some((opCombo) =>
+      calculateCombo(numbers, opCombo) === answer
+    );
   })
-    .filter((equationLine) => {
-      generateAllPossibleOperatorLists(equationLine[1].length - 1);
-      return true;
-    });
-
-  //console.log(equations);
-  //console.log(generateAllPossibleOperatorLists(equations[1][1].length - 1));
-  throw new Error("TODO");
+    .reduce((sum, [answer]) => sum + answer, 0);
 }
 
 // function part2(input: string): number {
