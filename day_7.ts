@@ -24,18 +24,19 @@ function generateAllPossibleOperatorLists(equationLength: number): Combo[] {
   return result;
 }
 
-function generateAllPossibleOperatorListsPart2(equationLength: number): Combo[] {
-  if (equationLength <= 0) return [[]];
+function* generateAllPossibleOperatorListsPart2(equationLength: number): Generator<Combo> {
+  if (equationLength <= 0) {
+    yield [];
+    return;
+  }
 
   const smaller = generateAllPossibleOperatorListsPart2(equationLength - 1);
-  const result: Combo[] = [];
 
   for (const c of smaller) {
-    result.push([...c, "+"]);
-    result.push([...c, "*"]);
-    result.push([...c, "||"]);
+    yield [...c, "+"];
+    yield [...c, "*"];
+    yield [...c, "||"];
   }
-  return result;
 }
 
 function calculateCombo(numList: number[], opList: Symbol[]): number {
