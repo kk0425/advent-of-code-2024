@@ -9,7 +9,7 @@ function parse(input: string) {
   });
 }
 
-type Symbol = "+" | "*";
+type Symbol = "+" | "*" | "||";
 type Combo = Symbol[];
 function generateAllPossibleOperatorLists(equationLength: number): Combo[] {
   if (equationLength <= 0) return [[]];
@@ -24,9 +24,39 @@ function generateAllPossibleOperatorLists(equationLength: number): Combo[] {
   return result;
 }
 
+function generateAllPossibleOperatorListsPart2(equationLength: number): Combo[] {
+  if (equationLength <= 0) return [[]];
+
+  const smaller = generateAllPossibleOperatorListsPart2(equationLength - 1);
+  const result: Combo[] = [];
+
+  for (const c of smaller) {
+    result.push([...c, "+"]);
+    result.push([...c, "*"]);
+    result.push([...c, "||"]);
+  }
+  return result;
+}
+
 function calculateCombo(numList: number[], opList: Symbol[]): number {
   return opList.reduce(
     (acc, op, i) => (op === "+" ? acc + numList[i + 1] : acc * numList[i + 1]),
+    numList[0],
+  );
+}
+
+function calculateComboPart2(numList: number[], opList: Symbol[]): number {
+  return opList.reduce(
+    (acc, op, i) => {
+      let number = numList[i + 1];
+      if (op === "+") {
+        return acc + number;
+      } else if (op === "*") {
+        return acc * number;
+      } else {
+        return Number("" + acc + number);
+      }
+    },
     numList[0],
   );
 }
@@ -42,14 +72,20 @@ function part1(input: string): number {
     .reduce((sum, [answer]) => sum + answer, 0);
 }
 
-// function part2(input: string): number {
-//   const items = parse(input);
-//   throw new Error("TODO");
-// }
+function part2(input: string): number {
+  const items = parse(input);
+
+  return items.filter(([answer, numbers]) => {
+    return generateAllPossibleOperatorListsPart2(numbers.length - 1).some((opCombo) =>
+      calculateComboPart2(numbers, opCombo) === answer
+    );
+  })
+    .reduce((sum, [answer]) => sum + answer, 0);
+}
 
 if (import.meta.main) {
   runPart(2024, 7, 1, part1);
-  // runPart(2024, 7, 2, part2);
+  runPart(2024, 7, 2, part2);
 }
 
 const TEST_INPUT = `\
@@ -68,6 +104,6 @@ Deno.test("part1", () => {
   assertEquals(part1(TEST_INPUT), 3749);
 });
 
-// Deno.test("part2", () => {
-//   assertEquals(part2(TEST_INPUT), 12);
-// });
+Deno.test("part2", () => {
+  assertEquals(part2(TEST_INPUT), 11387);
+});
