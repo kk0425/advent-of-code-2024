@@ -48,7 +48,7 @@ function calculateCombo(numList: number[], opList: Symbol[]): number {
 function calculateComboPart2(numList: number[], opList: Symbol[]): number {
   return opList.reduce(
     (acc, op, i) => {
-      let number = numList[i + 1];
+      const number = numList[i + 1];
       if (op === "+") {
         return acc + number;
       } else if (op === "*") {
